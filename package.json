@@ -11,6 +11,7 @@
     "express-validator": "^6.10.0",
     "express.js": "^1.0.0",
     "hubspot": "^2.3.14",
+    "nodemailer": "^6.6.0",
     "sanitize": "^2.1.0",
     "sanitizer": "^0.1.3"
   }

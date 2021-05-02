@@ -61,18 +61,13 @@ function createClient(request, response) {
             });
         } else {
             return response.status(400).json({
-                error: res.body  
+                message: res.body  
             });
         }
     })
 }
 
-function updateClient(request, response) {
-
-    const valorEncomenda =  parseFloat(request.body.valorEncomenda);
-    const email = request.body.email;
-
-
+function updateClient(email, valorEncomenda, callback) {
     let options = {
         headers: {
             'Content-Type': 'application/json; charset=utf-8'
@@ -112,25 +107,28 @@ function updateClient(request, response) {
 
             req.post(options1, (err1, res1) => {
                 if (!err1 && res1.statusCode == 204) {
-                    return response.status(200).json({
-                        message: "success"
+                    callback({
+                        'statusCode': res.statusCode,
+                        'body': "success"
                     });
                 } else {
-                    return response.status(400).json({
-                        error: res.body
+                    callback({
+                        'statusCode': res.statusCode,
+                        'body': JSON.parse(res.body)
                     });
                 }
             })
         } else {
             return response.status(400).json({
-                error: res.body
+                message: res.body
             });
         }
     })
 }
 
-function createTicket(request, response) {
 
+function sendTicket(request, response) {
+    
     const titulo =  request.body.titulo;
     const texto = request.body.texto;
     const email = request.body.email;
@@ -200,26 +198,87 @@ function createTicket(request, response) {
                             });
                         } else {
                             return response.status(400).json({
-                                error: res1
+                                message: res1
                             });
                         }
                     })
                 } else {
                     return response.status(400).json({
-                        error: res0.body
+                        message: res0.body
                     });
                 }
             })
         } else {
             return response.status(400).json({
-                error: res.body
+                message: res.body
             });
         }
     })
 }
 
+
+function getClient(request, response) {
+    const email = request.params.email;
+
+    let options = {
+        url: `https://api.hubapi.com/contacts/v1/contact/email/${email}/profile?hapikey=${Key}`
+    }
+    req.get(options, (err, res) => {
+        if (!err && res.statusCode == 200) {
+            let user = JSON.parse(res.body);
+            let data = user.properties;
+            return response.status(200).json({
+                message: data
+            });
+        } else {
+            return response.status(400).json({
+                message: res.body
+            });
+        }
+    })
+}
+
+
+function getClientByEmail(email, callback) {
+
+    let options = {
+        url: `https://api.hubapi.com/contacts/v1/contact/email/${email}/profile?hapikey=${Key}`
+    }
+    req.get(options, (err, res) => {
+        if (!err) {
+            if (res.statusCode == 200) {
+                let user = JSON.parse(res.body);
+                let data = user.properties;
+
+                const result = {
+                    'nome': data.firstname.value + " " + data.lastname.value,
+                    'email': data.email.value,
+                    'nif': data.nif.value
+                }
+                callback({
+                    'user': result
+                });
+            } else {
+                callback({
+                    'statusCode': res.statusCode,
+                    'body': JSON.parse(res.body)
+                })
+            }
+        } else {
+            console.log(err);
+            callback({
+                'statusCode': 400,
+                'body': 'erro'
+            })
+        }
+    })
+}
+
+
 module.exports = {
     createClient: createClient,
     updateClient: updateClient,
-    createTicket: createTicket
+    sendTicket: sendTicket,
+    getClient: getClient,
+    getClientByEmail: getClientByEmail
 };
