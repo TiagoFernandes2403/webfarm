@@ -55,27 +55,24 @@ function makeOrder(request, response) {
                         for (let j = 0; j < res.products.length; j++) {
                             if (res.products[j].itemKey == arrayProdutos[i]) {
                                 product = res.products[j];
-
-                                if (product) {
-                                    productSold.push({
-                                        'salesItem': product.itemKey,
-                                        'description': product.description,
-                                        'quantity': arrayQuantProdutos[i],
-                                        'unitPrice': product.priceListLines[0].priceAmount,
-                                        'unit': product.priceListLines[0].unit,
-                                        'itemTaxSchema': product.itemTaxSchema,
-                                        'deliveryDate': new Date().toISOString()
-                                    })
-                                }
-                                else {
-
-                                }
-                            }
-                            else {
+                                break;
 
                             }
                         }
                     }
+
+                    if (product) {
+                        productSold.push({
+                            'salesItem': product.itemKey,
+                            'description': product.description,
+                            'quantity': arrayQuantProdutos[i],
+                            'unitPrice': product.priceListLines[0].priceAmount,
+                            'unit': product.priceListLines[0].unit,
+                            'itemTaxSchema': product.itemTaxSchema,
+                            'deliveryDate': new Date().toISOString()
+                        })
+                    }
+                    
                     jasminAux.checkUser(email, access_token, (res) => {
                         if (res.statusCode == 200) {
                             if (res.body.length == 0) {
