@@ -48,7 +48,7 @@ function makeOrder(request, response) {
                     let product;
                     let productSold = [];
                     var arrayProdutos = produtos.split("|"); //array guarda produtos
-                    var arrayQuantProdutos = quantidade.split("|"); //array guarda quantidade produto
+                    //var arrayQuantProdutos = quantidade.split("|"); //array guarda quantidade produto
 
                     for (let i = 0; i < arrayProdutos.length; i++) {
 
@@ -65,7 +65,7 @@ function makeOrder(request, response) {
                         productSold.push({
                             'salesItem': product.itemKey,
                             'description': product.description,
-                            'quantity': arrayQuantProdutos[i],
+                            'quantity': 1,
                             'unitPrice': product.priceListLines[0].priceAmount,
                             'unit': product.priceListLines[0].unit,
                             'itemTaxSchema': product.itemTaxSchema,
@@ -133,10 +133,10 @@ function makeOrder(request, response) {
 
                                             req.post(options, (err, res) => {
                                                 const idFatura = res.body;
+
                                                 if (!err && res.statusCode == 201) {
                                                     hubspot.updateClient(email, valorEncomenda, (res) => {
                                                         if (res.statusCode == 200) {
-                                                            console.log(valorEncomenda);
 
                                                             jasminAux.getFatura(access_token, idFatura, (res) => {
                                                                 if (res.statusCode == 200) {
@@ -154,13 +154,7 @@ function makeOrder(request, response) {
                                                                 }
                                                             })
                                                         }
-                                                        else {
-                                                            return response.status(400).json({
-                                                                message: res.body
-                                                            });
-                                                        }
                                                     })
-
                                                 }
                                                 else {
                                                     return response.status(400).json({
@@ -231,8 +225,9 @@ function makeOrder(request, response) {
                                     }
 
                                     req.post(options, (err, res) => {
-                                        const idFatura = res.body;
                                         if (!err && res.statusCode == 201) {
+                                            const idFatura = res.body;
+
                                             hubspot.updateClient(email, valorEncomenda, (res) => {
                                                 if (res.statusCode == 200) {
 
