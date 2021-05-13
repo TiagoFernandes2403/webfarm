@@ -34,7 +34,6 @@ function getProductsFromJasmin(request, response) {
 function makeOrder(request, response) {
     const email = request.body.email;
     const produtos = request.body.produtos;
-    const quantidade = request.body.quantidade;
     const valorEncomenda = parseFloat(request.body.valor);
 
     jasminAux.getInvoiceType((res) => {
@@ -47,30 +46,23 @@ function makeOrder(request, response) {
 
                     let product;
                     let productSold = [];
-                    var arrayProdutos = produtos.split("|"); //array guarda produtos
-                    //var arrayQuantProdutos = quantidade.split("|"); //array guarda quantidade produto
+                    for (let i = 0; i < produtos.length; i++) {
 
-                    for (let i = 0; i < arrayProdutos.length; i++) {
-
-                        for (let j = 0; j < res.products.length; j++) {
-                            if (res.products[j].itemKey == arrayProdutos[i]) {
-                                product = res.products[j];
+                        for (let j = 0; j < res.product.length; j++) {
+                            if (res.products[j].itemKey == produtos[i].nome) {
+                                productSold.push({
+                                    'salesItem': product.itemKey,
+                                    'description': product.description,
+                                    'quantity': 1,
+                                    'unitPrice': product.priceListLines[0].priceAmount,
+                                    'unit': product.priceListLines[0].unit,
+                                    'itemTaxSchema': product.itemTaxSchema,
+                                    'deliveryDate': new Date().toISOString()
+                                })
                                 break;
 
                             }
                         }
-                    }
-
-                    if (product) {
-                        productSold.push({
-                            'salesItem': product.itemKey,
-                            'description': product.description,
-                            'quantity': 1,
-                            'unitPrice': product.priceListLines[0].priceAmount,
-                            'unit': product.priceListLines[0].unit,
-                            'itemTaxSchema': product.itemTaxSchema,
-                            'deliveryDate': new Date().toISOString()
-                        })
                     }
                     
                     jasminAux.checkUser(email, access_token, (res) => {
