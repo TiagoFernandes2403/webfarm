@@ -1,6 +1,6 @@
 const req = require('request');
 const hubspotController = require('./../controllers/hubspot.controller');
-const url_jasmin = 'https://my.jasminsoftware.com/api/252287/252287-0001/';
+const url_jasmin = 'https://my.jasminsoftware.com/api/253707/253707-0001/';
 const querystring = require('querystring');
 const nodemailer = require('nodemailer');
 
@@ -131,8 +131,7 @@ function getInvoiceType(callback) {
     })
 }
 
-//retorna os produtos disponiveis para venda na conta 
-//associada ao pedido com access token "x"
+//retorna os produtos disponiveis para venda na conta associada ao pedido com access token "x"
 function getProducts(access_token, callback) {
 
     let options = {

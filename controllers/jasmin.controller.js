@@ -1,7 +1,7 @@
 const req = require('request');
 const jasminAux = require('./../controllers/jasminAux.controller');
 const hubspot = require('./../controllers/hubspot.controller');
-const url_jasmin = 'https://my.jasminsoftware.com/api/252287/252287-0001/';
+const url_jasmin = 'https://my.jasminsoftware.com/api/253707/253707-0001/';
 
 
 function getProductsFromJasmin(request, response) {
