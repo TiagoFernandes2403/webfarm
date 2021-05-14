@@ -43,28 +43,26 @@ function makeOrder(request, response) {
 
             jasminAux.getProducts(access_token, (res) => {
                 if (res.products) {
-
-                    let product;
                     let productSold = [];
+                    
                     for (let i = 0; i < produtos.length; i++) {
 
-                        for (let j = 0; j < res.product.length; j++) {
-                            if (res.products[j].itemKey == produtos[i].nome) {
+                        for (let j = 0; j < res.products.length; j++) {
+                            if (res.products[j].itemKey == produtos[i].itemKey) {
                                 productSold.push({
-                                    'salesItem': product.itemKey,
-                                    'description': product.description,
+                                    'salesItem': res.products[j].itemKey,
+                                    'description': res.products[j].description,
                                     'quantity': 1,
-                                    'unitPrice': product.priceListLines[0].priceAmount,
-                                    'unit': product.priceListLines[0].unit,
-                                    'itemTaxSchema': product.itemTaxSchema,
+                                    'unitPrice': res.products[j].priceListLines[0].priceAmount,
+                                    'unit': res.products[j].priceListLines[0].unit,
+                                    'itemTaxSchema': res.products[j].itemTaxSchema,
                                     'deliveryDate': new Date().toISOString()
                                 })
                                 break;
-
                             }
                         }
                     }
-                    
+
                     jasminAux.checkUser(email, access_token, (res) => {
                         if (res.statusCode == 200) {
                             if (res.body.length == 0) {
@@ -129,10 +127,11 @@ function makeOrder(request, response) {
                                                 if (!err && res.statusCode == 201) {
                                                     hubspot.updateClient(email, valorEncomenda, (res) => {
                                                         if (res.statusCode == 200) {
-
+                                                            
                                                             jasminAux.getFatura(access_token, idFatura, (res) => {
                                                                 if (res.statusCode == 200) {
                                                                     const pdf = res.body;
+                                                                    console.log(pdf);
 
                                                                     jasminAux.sendFatura(email, pdf);
                                                                     return response.status(200).json({
@@ -164,6 +163,7 @@ function makeOrder(request, response) {
                                 })
                             }
                             else {
+
                                 const user = res.body[0];
 
                                 if (productSold.length != 0) {
@@ -217,12 +217,14 @@ function makeOrder(request, response) {
                                     }
 
                                     req.post(options, (err, res) => {
+
                                         if (!err && res.statusCode == 201) {
                                             const idFatura = res.body;
 
                                             hubspot.updateClient(email, valorEncomenda, (res) => {
-                                                if (res.statusCode == 200) {
 
+                                                if (res.statusCode == 200) {
+                                                    
                                                     jasminAux.getFatura(access_token, idFatura, (res) => {
                                                         if (res.statusCode == 200) {
                                                             const pdf = res.body;

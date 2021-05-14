@@ -192,7 +192,6 @@ function getFatura(access_token, idFatura, callback) {
     let options = {
         headers: {
             'Authorization': `Bearer ${access_token}`,
-            //'Content-Type': 'application/octet-stream'
         },
         encoding: null,
         url: `${url_jasmin}/billing/invoices/${id}/printOriginal`
@@ -218,8 +217,8 @@ function sendFatura(email, pdf) {
     var transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
-            user: 'webfarm21@gmail.com',
-            pass: 'Webfarm2021'
+            user: 'webfarmisi21@gmail.com',
+            pass: 'webfarm2021!'
         }
     });
 
@@ -242,7 +241,7 @@ function sendFatura(email, pdf) {
     var text = saudacao + mensagemResultado;
 
     var mailOptions = {
-        from: 'webfarm21@gmail.com', // email emissor
+        from: 'webfarmisi21@gmail.com', // email emissor
         to: email, // lista de recetores
         subject: 'Fatura Comprovativa de aquisição de produto - Jasmin',
         text: text,
@@ -255,14 +254,18 @@ function sendFatura(email, pdf) {
         ]
     };
 
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Message sent: ' + info.response);
-        };
-    });
-
+    const DELAY = 5 * 1000 // secs * milliseconds
+    setTimeout(function () {
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log('Mail failled to send')
+            } else {
+                console.log('Mail sent to ' + mailOptions.to)
+            }
+        })
+    },
+        DELAY
+    );
 }
 
 
